@@ -44,7 +44,8 @@ model Order {
   status       String   @db.Text
   totalAmount  String   @db.Text
 
-  car       Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
+  car Car @relation(fields: [carId], references: [id], onDelete: Cascade)
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

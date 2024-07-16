@@ -26,10 +26,10 @@ export function ButtonAddCar() {
             <DialogContent>
                 <DialogHeader>
                     <DialogDescription>
-                        <FormAddCar />
+                        <FormAddCar setOpenDialog={setOpenDialog}/>
                     </DialogDescription>
                 </DialogHeader>
             </DialogContent>
         </Dialog>
-    )
+    );
 }

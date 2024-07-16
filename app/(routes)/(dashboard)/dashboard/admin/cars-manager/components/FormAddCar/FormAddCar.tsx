@@ -1,8 +1,9 @@
-"use client"
+"use client";
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod";
+import axios from "axios";
 
 import { Button } from "@/components/ui/button"
 import {
@@ -19,9 +20,15 @@ import { formSchema } from "./FormAddCar.form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UploadButton } from "@/utils/uploadthing";
 import { useState } from "react";
+import { FormAddCarProps } from "./FormAddCar.types";
+import { toast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
-export function FormAddCar() {
-    const [photoUploaded, setPhotoUploaded] = useState(false)
+export function FormAddCar(props: FormAddCarProps) {
+    const { setOpenDialog } = props;
+    const [photoUploaded, setPhotoUploaded] = useState(false);
+    const router = useRouter();
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -36,11 +43,23 @@ export function FormAddCar() {
             isPublish: false,
 
         },
-    })
+    });
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        
-    };
+        setOpenDialog(false);
+        try {
+          await axios.post(`/api/car`,values);
+          toast({
+            title: "Car created ✅",
+          });
+          router.refresh();
+        } catch (error) {
+          toast({
+            title: "Something went wrong",
+            variant: "destructive",
+          });
+        }
+      };
 
     const { isValid } = form.formState;
 
@@ -53,7 +72,7 @@ export function FormAddCar() {
                         name="name"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Username</FormLabel>
+                                <FormLabel>Nombre Carro</FormLabel>
                                 <FormControl>
                                     <Input placeholder="Tesla Model S Plaid" {...field} />
                                 </FormControl>
