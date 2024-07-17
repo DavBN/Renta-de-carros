@@ -7,9 +7,45 @@ import { useRouter } from "next/navigation";
 
 import { CardCarProps } from "./CardCar.type";
 import { ButtonEditCar } from "./ButtonEditCar";
+import axios from "axios";
 
 export function CardCar(props: CardCarProps) {
     const { car } = props;
+    const router = useRouter();
+
+    const deleteCar = async () => {
+        try {
+            await axios.delete(`/api/car/${car.id}`);
+            toast({ title: "Carro eliminado ❌" });
+        } catch (error) {
+            toast({
+                title: "Something went wrong",
+                variant: "destructive"
+            })
+        }
+    };
+
+    const handlerPublishCar = async (publish: boolean) => {
+        try {
+            await axios.patch(`/api/car/${car.id}`, { isPublish: publish });
+            if(publish) {
+                toast({
+                    title: "Carro publicado✔️",
+                });
+            } else {
+                toast({
+                    title: "Carro no publicado⚠️",
+                });
+            }
+            router.refresh();
+        } catch (error) {
+            toast({
+                title: "Sometring went wrong",
+                variant: "destructive"
+            })
+        }
+    }
+
     return (
         <div className="relative p-1 bg-white rounded-lg shadow-md hover:shadow-lg">
             <Image
@@ -20,9 +56,9 @@ export function CardCar(props: CardCarProps) {
                 className="rounded-lg"
             />
             {car.isPublish ? (
-                <p className="absolute top-0 right-0 w-full p-1 text-center text-white bg-green-700">Publicado</p>
+                <p className="absolute top-0 right-0 w-full p-1 text-center text-white bg-green-700 rounded-t-lg">Publicado</p>
             ) : (
-                <p className="absolute top-0 left-0 right-0 w-full p-1 text-center text-white bg-red-700">No publicado</p>
+                <p className="absolute top-0 left-0 right-0 w-full p-1 text-center text-white bg-red-700  rounded-t-lg">No publicado</p>
             )}
             <div className="relative p-3">
                 <div className="flex flex-col mb-3 gap-x-4">
@@ -51,24 +87,24 @@ export function CardCar(props: CardCarProps) {
                         {car.cv} Potencia
                     </p>
                     <div className="flex justify-between mt-3 gap-x-4">
-                        <Button variant="outline" onClick={() => console.log("delete")}>
+                        <Button variant="outline" onClick={deleteCar}>
                             Borrar
                             <Trash className="w-4 h-4 ml-2" />
                         </Button>
 
-                        <ButtonEditCar carData={car}/>
+                        <ButtonEditCar carData={car} />
                     </div>
                     {car.isPublish ? (
-                        <Button className="w-full mt-3" variant="outline" onClick={() => console.log("despublicar")}>
+                        <Button className="w-full mt-3" variant="outline" onClick={() => handlerPublishCar(false)}>
                             Despublicar
 
-        
-                    </Button>
-                    ) : ( <Button className="w-full mt-3" onClick={() => console.log("publicar")}
+
+                        </Button>
+                    ) : (<Button className="w-full mt-3" onClick={() => handlerPublishCar(true)}
                     >
                         Publicar
                         <Upload className="w-4 h-4 ml-2" />
-                        </Button>
+                    </Button>
 
                     )}
                 </div>
