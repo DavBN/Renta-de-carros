@@ -1,6 +1,8 @@
 import { db } from "@/lib/db";
 import { auth, currentUser } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation";
+import { TablesReserves } from "../../../reserves/components/TableReservers/TablesReserves";
+import { TableReserves } from "./components/TableReserves/TableReserves";
 
 export default async function pageReservesAdmin() {
  const {userId} =auth();
@@ -18,7 +20,7 @@ export default async function pageReservesAdmin() {
   return (
     <div>
         <h1>Página reservas</h1>
-        <p>Tabla</p>
+        <TableReserves orders={order}/>
     </div>
   )
 }
