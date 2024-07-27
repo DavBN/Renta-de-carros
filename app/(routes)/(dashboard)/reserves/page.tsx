@@ -9,7 +9,7 @@ import { isAdministrator } from "@/lib/isAdministrator";
 export default async function pageReserves() {
     const { userId } = auth();
 
-    if(!userId || !isAdministrator(userId)) {
+    if(!userId) {
         return redirect("/")
     }
     const orders = await db.order.findMany({
